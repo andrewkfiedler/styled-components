@@ -20,6 +20,8 @@ _The format is based on [Keep a Changelog](http://keepachangelog.com/) and this 
 
   It's still highly recommended to use aliasing via your bundler to dedupe libraries like styled-components and react.
 
+- Migrate to use new `React.forwardRef` API, by [@probablyup](https://github.com/probablyup); note that this removes the `innerRef` API since it is no longer needed.
+
 ## [v3.4.2] - 2018-08-07
 
 - Fix a regression from [#1843](https://github.com/styled-components/styled-components/pull/1892) that breaks deferred injection and duplicates rules, by [@kitten](https://github.com/kitten) (see [#1892](https://github.com/styled-components/styled-components/pull/1892))
