@@ -72,12 +72,13 @@ const configBase = {
 
 const globals = { react: 'React' }
 
-const umdBaseConfig = {
+const standaloneBaseConfig = {
   ...configBase,
+  input: './src/index-standalone.js',
   output: {
-    exports: 'named',
     file: 'dist/styled-components.js',
-    format: 'umd',
+    format: 'iife',
+    footer: ';window.styled = styled;',
     globals,
     name: 'styled',
     sourcemap: true,
@@ -91,21 +92,22 @@ const umdBaseConfig = {
   ),
 }
 
-const umdConfig = {
-  ...umdBaseConfig,
-  plugins: umdBaseConfig.plugins.concat(
+const standaloneConfig = {
+  ...standaloneBaseConfig,
+  plugins: standaloneBaseConfig.plugins.concat(
     replace({
       'process.env.NODE_ENV': JSON.stringify('development'),
     })
   ),
 }
 
-const umdProdConfig = {
-  ...umdBaseConfig,
-  output: Object.assign({}, umdBaseConfig.output, {
+const standaloneProdConfig = {
+  ...standaloneBaseConfig,
+  output: {
+    ...standaloneBaseConfig.output,
     file: 'dist/styled-components.min.js',
-  }),
-  plugins: umdBaseConfig.plugins.concat(prodPlugins),
+  },
+  plugins: standaloneBaseConfig.plugins.concat(prodPlugins),
 }
 
 const serverConfig = {
@@ -119,16 +121,6 @@ const serverConfig = {
       __SERVER__: JSON.stringify(true),
     })
   ),
-}
-
-const serverProdConfig = {
-  ...configBase,
-  ...serverConfig,
-  output: [
-    getESM({ file: 'dist/styled-components.esm.min.js' }),
-    getCJS({ file: 'dist/styled-components.cjs.min.js' }),
-  ],
-  plugins: serverConfig.plugins.concat(prodPlugins),
 }
 
 const browserConfig = {
@@ -145,18 +137,35 @@ const browserConfig = {
   ),
 }
 
-const browserProdConfig = {
+const noTagsPath = './src/index-without-tags.js'
+
+const noTagServerConfig = {
   ...configBase,
-  ...browserConfig,
+  input: noTagsPath,
   output: [
-    getESM({
-      file: 'dist/styled-components.browser.esm.min.js',
-    }),
-    getCJS({
-      file: 'dist/styled-components.browser.cjs.min.js',
-    }),
+    getESM({ file: 'dist/styled-components-no-tags.esm.js' }),
+    getCJS({ file: 'dist/styled-components-no-tags.cjs.js' }),
   ],
-  plugins: browserConfig.plugins.concat(prodPlugins),
+  plugins: configBase.plugins.concat(
+    replace({
+      __SERVER__: JSON.stringify(true),
+    })
+  ),
+}
+
+const noTagBrowserConfig = {
+  ...configBase,
+  input: noTagsPath,
+  output: [
+    getESM({ file: 'dist/styled-components-no-tags.browser.esm.js' }),
+    getCJS({ file: 'dist/styled-components-no-tags.browser.cjs.js' }),
+  ],
+  plugins: configBase.plugins.concat(
+    replace({
+      ...streamIgnore,
+      __SERVER__: JSON.stringify(false),
+    })
+  ),
 }
 
 const nativeConfig = {
@@ -184,12 +193,12 @@ const primitivesConfig = {
 }
 
 export default [
-  umdConfig,
-  umdProdConfig,
+  standaloneConfig,
+  standaloneProdConfig,
   serverConfig,
-  serverProdConfig,
   browserConfig,
-  browserProdConfig,
+  noTagServerConfig,
+  noTagBrowserConfig,
   nativeConfig,
   primitivesConfig,
 ]

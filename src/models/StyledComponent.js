@@ -1,5 +1,6 @@
 // @flow
 
+import validAttr from '@emotion/is-prop-valid'
 import hoist from 'hoist-non-react-statics'
 import React, { Component, createElement } from 'react'
 import createWarnTooManyClasses from '../utils/createWarnTooManyClasses'
@@ -8,7 +9,6 @@ import escape from '../utils/escape'
 import generateDisplayName from '../utils/generateDisplayName'
 import getComponentName from '../utils/getComponentName'
 import isTag from '../utils/isTag'
-import validAttr from '../utils/validAttr'
 import hasInInheritanceChain from '../utils/hasInInheritanceChain'
 import StyleSheet from './StyleSheet'
 import { ThemeConsumer, type Theme } from './ThemeProvider'
